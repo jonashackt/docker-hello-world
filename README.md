@@ -16,6 +16,11 @@ And there are already many projects that are simply not available anymore on Doc
 
 Well I thought why not crafting a simple and small `hello-world` image and publish it to GitHub Container Registry?!
 
+__TLDR;__ Simply run it with:
+
+```shell
+docker run ghcr.io/jonashackt/hello-world:latest
+```
 
 ### A simple Go executable
 
