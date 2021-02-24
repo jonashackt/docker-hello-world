@@ -151,3 +151,23 @@ The final step now is to push our container image to the GitHub Container Regist
         docker push ghcr.io/jonashackt/hello-world:latest
 ```
 
+To link our image to our GitHub repository (this isn't done automatically since images are treated as GH account global packages), we add a `LABEL` into our [Dockerfile](Dockerfile):
+
+```dockerfile
+LABEL org.opencontainers.image.source="https://github.com/jonashackt/docker-hello-world"
+```
+
+
+#### Make your image publicly accessible
+
+Per default our container image is private on GitHub Container Registry: https://docs.github.com/en/packages/guides/configuring-access-control-and-visibility-for-container-images
+
+To make it publicly accessible we need to move to our user account or orga page. For my account this is https://github.com/jonashackt?tab=packages
+
+![user-account-packages](screenshots/user-account-packages.png)
+
+Now click on the image published (which looks the same as a normal GH package) and then go to `Package Settings`. Now in the `Danger Zone` click on `change visibility` and choose `public`:
+
+![package-settings-visibility-public](screenshots/package-settings-visibility-public.png)
+
+
