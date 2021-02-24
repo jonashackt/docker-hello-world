@@ -157,6 +157,14 @@ To link our image to our GitHub repository (this isn't done automatically since 
 LABEL org.opencontainers.image.source="https://github.com/jonashackt/docker-hello-world"
 ```
 
+With this label the image package gets automatically linked to our repository:
+
+![image-package-linked-to-repository-by-label](screenshots/image-package-linked-to-repository-by-label.png)
+
+And also the image becomes visible on our repositories main page:
+
+![repo-main-page-package-shown](screenshots/repo-main-page-package-shown.png)
+
 
 #### Make your image publicly accessible
 
@@ -170,4 +178,10 @@ Now click on the image published (which looks the same as a normal GH package) a
 
 ![package-settings-visibility-public](screenshots/package-settings-visibility-public.png)
 
+We should finally be able to pull and run our image! Just run:
 
+```shell
+docker pull ghcr.io/jonashackt/hello-world:latest
+
+docker run ghcr.io/jonashackt/hello-world:latest
+```
