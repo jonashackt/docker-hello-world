@@ -93,3 +93,52 @@ To generate this message, Docker took the following steps:
 ```
 
 The resulting image is around `7.55MB` which should be small enough for our use cases.
+
+
+### Publish the Docker image to GitHub Container Registry
+
+We follow the full guide here: https://docs.github.com/en/packages/guides/pushing-and-pulling-docker-images
+
+#### Activate improved container support
+
+First we need to activate the Container Registry beta feature in our account: https://docs.github.com/en/packages/guides/enabling-improved-container-support
+
+![github-improved-container-support](screenshots/github-improved-container-support.png)
+
+
+#### Authenticate and login to GitHub Container Registry using a PAT
+
+Right now (in beta) [using the `GITHUB_TOKEN` to authenticate to the GHCR isn't possible](https://docs.github.com/en/packages/guides/pushing-and-pulling-docker-images#authenticating-to-github-container-registry). So we need to create a personal access token (PAT). But mind what the docs say:
+
+> PATs can grant broad access to your account. We recommend selecting only the necessary read, write, or delete package scope when creating a PAT to authenticate to the container registry. Avoid including the repo scope in a PAT used by a GitHub Actions workflow because it gives unnecessary additional access.
+
+Here's the guide on how to create a PAT in Settings/Developer settings/Personal access tokens: https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token You need to select `read:packages`, `write:packages` and `delete:packages` scopes like this:
+
+![github-create-pat](screenshots/github-create-pat.png)
+
+Using the token we should now create a new repository secret inside our repo settings:
+
+![github-pat-repository-secret](screenshots/github-pat-repository-secret.png)
+
+With all that set up we can now use the secret inside our GHA workflow file [publish.yml](.github/workflows/publish.yml):
+
+```yaml
+name: publish
+
+on: [push]
+
+jobs:
+  publish-hello-world-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the hello-world Docker image
+      run: |
+        echo $CR_PAT | docker login ghcr.io -u jonashackt --password-stdin
+      env:
+        CR_PAT: ${{ secrets.CR_PAT }}
+```
+
+
