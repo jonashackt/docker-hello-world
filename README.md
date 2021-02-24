@@ -1,4 +1,6 @@
 # docker-hello-world
+[![Build Status](https://github.com/jonashackt/docker-hello-world/workflows/publish/badge.svg)](https://github.com/jonashackt/docker-hello-world/actions)
+
 Example hello world container showing how to use GitHub Container Registry
 
 
@@ -66,6 +68,8 @@ COPY --from=0 "/go/src/app/hello-world" hello-world
 
 ENTRYPOINT ./hello-world
 ```
+
+The second "run" image is based on the same https://hub.docker.com/_/alpine image as the builder image containing the GO runtimes.
 
 Now let's build and run our image:
 
