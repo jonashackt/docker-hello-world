@@ -141,4 +141,13 @@ jobs:
         CR_PAT: ${{ secrets.CR_PAT }}
 ```
 
+#### Publish (Push) Container image to GHCR
+
+The final step now is to push our container image to the GitHub Container Registry. Therefore we need to tag our image correctly while building it using `ghcr.io/OWNER/IMAGE_NAME:latest`. After that we can push it:
+
+```yaml
+        docker build . --tag ghcr.io/jonashackt/hello-world:latest
+        docker run ghcr.io/jonashackt/hello-world:latest
+        docker push ghcr.io/jonashackt/hello-world:latest
+```
 
