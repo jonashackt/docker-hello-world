@@ -9,9 +9,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build the hello-world Docker image
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u jonashackt --password-stdin
         docker build . --tag ghcr.io/jonashackt/hello-world:latest
         docker run ghcr.io/jonashackt/hello-world:latest
         docker push ghcr.io/jonashackt/hello-world:latest

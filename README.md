@@ -132,9 +132,21 @@ jobs:
 
     - name: Build the hello-world Docker image
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u jonashackt --password-stdin
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
 ```
+
+or Alternatively we can also use the [docker/login-action](https://github.com/docker/login-action) to to the login:
+
+```yaml
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+```
+
 
 #### Publish (Push) Container image to GHCR
 
