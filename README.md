@@ -112,21 +112,11 @@ First we need to activate the Container Registry beta feature in our account: ht
 ![github-improved-container-support](screenshots/github-improved-container-support.png)
 
 
-#### Authenticate and login to GitHub Container Registry using a PAT
+#### Authenticate and login to GitHub Container Registry using GITHUB_TOKEN
 
-Right now (in beta) [using the `GITHUB_TOKEN` to authenticate to the GHCR isn't possible](https://docs.github.com/en/packages/guides/pushing-and-pulling-docker-images#authenticating-to-github-container-registry). So we need to create a personal access token (PAT). But mind what the docs say:
+From March 2021 on we should be able to use our `GITHUB_TOKEN` to authenticate against the GitHub Container Registry instead of using a separate PAT (see https://github.blog/changelog/2021-03-24-packages-container-registry-now-supports-github_token/)!
 
-> PATs can grant broad access to your account. We recommend selecting only the necessary read, write, or delete package scope when creating a PAT to authenticate to the container registry. Avoid including the repo scope in a PAT used by a GitHub Actions workflow because it gives unnecessary additional access.
-
-Here's the guide on how to create a PAT in Settings/Developer settings/Personal access tokens: https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token You need to select `read:packages`, `write:packages` and `delete:packages` scopes like this:
-
-![github-create-pat](screenshots/github-create-pat.png)
-
-Using the token we should now create a new repository secret inside our repo settings:
-
-![github-pat-repository-secret](screenshots/github-pat-repository-secret.png)
-
-With all that set up we can now use the secret inside our GHA workflow file [publish.yml](.github/workflows/publish.yml):
+So our GHA workflow file [publish.yml](.github/workflows/publish.yml) should look like this:
 
 ```yaml
 name: publish
@@ -142,10 +132,21 @@ jobs:
 
     - name: Build the hello-world Docker image
       run: |
-        echo $CR_PAT | docker login ghcr.io -u jonashackt --password-stdin
-      env:
-        CR_PAT: ${{ secrets.CR_PAT }}
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
 ```
+
+or Alternatively we can also use the [docker/login-action](https://github.com/docker/login-action) to to the login:
+
+```yaml
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+```
+
 
 #### Publish (Push) Container image to GHCR
 
