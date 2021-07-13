@@ -1,5 +1,5 @@
 # We need a golang build environment first
-FROM golang:1.16.5-alpine3.13
+FROM golang:1.16.6-alpine3.13
 
 WORKDIR /go/src/app
 ADD hello-world.go /go/src/app
